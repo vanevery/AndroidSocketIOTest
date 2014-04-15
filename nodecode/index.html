@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socket = io.connect('http://54.221.90.69:8080/');
+			
+			socket.on('connect', function() {
+				console.log("Connected");
+			});
+
+			// Receive a message
+			socket.on('message', function(data) {
+				console.log("Got: " + data);
+				document.getElementById('messages').innerHTML += data;
+			});
+
+			// Receive from any event
+			socket.on(‘otherevent’, function (data) {
+				console.log(data);
+			});
+			
+			var sendmessage = function() {
+				var message = document.getElementById('message').value;
+				console.log("Sending: " + message);
+				
+				// Send a messaage
+				socket.send(message);
+			};
+			
+			var sendother = function() {
+				var othermessage = document.getElementById('message').value;
+				console.log("sending: " + othermessage);
+				
+				// Send any kind of data with a custom event
+				//socket.emit('otherevent',{ othermessage: othermessage });
+				socket.emit('otherevent', othermessage);
+			};
+		</script>
+	</head>
+	<body>
+ 		<div id="messages">
+			No Messages Yet
+		</div>
+		<div>
+			<input type="text" id="message" name="message">
+			<input type="button" value="message" onclick="sendmessage();">
+			<input type="button" value="other" onclick="sendother();">
+		</div>
+	</body>
+</html>
